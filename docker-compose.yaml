@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+
+  # nginx service
+  web:
+    container_name: "web"
+    image: nginx:alpine
+    depends_on:
+      - app
+    ports:
+      - "8000:80"
+    volumes:
+      - ./app/conf.d:/etc/nginx/conf.d
+    networks:
+      - custom
+
+  # application service
+  app:
+    container_name: "app"
+    image: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - custom
+    depends_on:
+      - mongo_db
+
+  # database service
+
+networks:
+  custom:
+    driver: bridge
